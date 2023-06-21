@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+then
+    echo "Usage: domaintest DOMAIN_NAME"
+    exit 1
+fi
+
+function dig_domain() {
+    echo -e "\033[1m\033[1;34mdig: $1\033[0m"
+    digout="$(dig +short $1 @208.67.222.222)"
+    if [ -z $digout ]
+    then
+        echo "No DNS entries found."
+    else
+        echo $digout
+    fi
+    echo
+}
+
+function ping_domain() {
+    echo -e "\033[1m\033[1;31mping: $1\033[0m"
+    ping -c 1 -t 1 $1 | grep -e "time=" -e "packet loss"
+    echo
+}
+
+function ssh_keyscan_domain() {
+    echo -e "\033[1m\033[1;36mssh-keyscan: $1\033[0m"
+    ssh-keyscan -T 1 $1
+    if [ $? != 0 ]
+    then
+        echo "No SSH keys found."
+    fi
+    echo
+}
+
+function curl_domain() {
+    echo -e "\033[1m\033[1;33mcurl: $1\033[0m"
+    curl -I  --connect-timeout 1 $1
+    if [ $? != 0 ]
+    then
+        echo
+    fi
+}
+
+function test_domain() {
+    dig_domain $1
+    ping_domain $1
+    ssh_keyscan_domain $1
+    curl_domain "http://$1"
+    curl_domain "https://$1"
+}
+
+echo
+test_domain $1

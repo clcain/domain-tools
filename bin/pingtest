@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+then
+    echo "Usage: pingtest HOSTS_FILE"
+    exit 1
+fi
+
+function test_ping() {
+    echo -e "\033[1m\033[1;31mping: $1\033[0m"
+    ping -c 1 -t 1 $1 | grep -e "time=" -e "packet loss"
+    echo
+}
+
+while read x; do
+    case "$x" in
+        \#*)
+            continue
+            ;;
+        '')
+            continue
+            ;;
+    esac
+
+    x="$(echo $x | cut -d' ' -f1)"
+    test_ping $x
+done < $1
