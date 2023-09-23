@@ -6,8 +6,20 @@ then
     exit 1
 fi
 
-function dig_domain() {
-    echo -e "\033[1m\033[1;34mdig: $1\033[0m"
+function dig_domain_local() {
+    echo -e "\033[1m\033[1;34mdig (local): $1\033[0m"
+    digout="$(dig +short $1)"
+    if [ -z $digout ]
+    then
+        echo "No DNS entries found."
+    else
+        echo $digout
+    fi
+    echo
+}
+
+function dig_domain_public() {
+    echo -e "\033[1m\033[1;34mdig (public): $1\033[0m"
     digout="$(dig +short $1 @208.67.222.222)"
     if [ -z $digout ]
     then
@@ -44,7 +56,8 @@ function curl_domain() {
 }
 
 function test_domain() {
-    dig_domain $1
+    dig_domain_local $1
+    dig_domain_public $1
     ping_domain $1
     ssh_keyscan_domain $1
     curl_domain "http://$1"
