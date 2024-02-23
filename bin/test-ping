@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
 then
-    echo "Usage: pingtest HOSTS_FILE"
+    echo "Usage: test-ping HOSTS_FILE"
     exit 1
 fi
 

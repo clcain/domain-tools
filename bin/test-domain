@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
 then
-    echo "Usage: domaintest DOMAIN_NAME"
+    echo "Usage: test-domain DOMAIN_NAME"
     exit 1
 fi
 
